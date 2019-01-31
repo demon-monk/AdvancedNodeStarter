@@ -8,7 +8,15 @@ client.get = util.promisify(client.get);
 
 const originExec = mongoose.Query.prototype.exec;
 
+mongoose.Query.prototype.cache = function() {
+  this._useCache = true;
+  return this;
+};
+
 mongoose.Query.prototype.exec = async function() {
+  if (!this._useCache) {
+    return originExec.apply(this, arguments);
+  }
   const redisKey = JSON.stringify({
     ...this.getQuery(),
     ...{ collection: this.mongooseCollection.name }
@@ -17,13 +25,12 @@ mongoose.Query.prototype.exec = async function() {
   if (cacheValue) {
     console.log("FROM REDIS");
     const cacheValueObj = JSON.parse(cacheValue);
-    console.log(cacheValue)
+    console.log(cacheValue);
     return Array.isArray(cacheValueObj)
       ? cacheValueObj.map(obj => new this.model(obj))
       : new this.model(cacheValueObj);
   }
   const result = await originExec.apply(this, arguments);
-  console.log(result)
   client.set(redisKey, JSON.stringify(result));
   return result;
 };
