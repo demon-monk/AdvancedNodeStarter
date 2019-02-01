@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const requireLogin = require('../middlewares/requireLogin');
+const {clearCache} = require('../services/cache')
 
 const Blog = mongoose.model('Blog');
 
@@ -13,8 +14,10 @@ module.exports = app => {
     res.send(blog);
   });
 
-  app.get('/api/blogs', requireLogin, async (req, res) => {
-    const blogs = await Blog.find({ _user: req.user.id }).cache();
+  app.get("/api/blogs", requireLogin, async (req, res) => {
+    const blogs = await Blog.find({
+      _user: req.user.id
+    }).cache({ key: req.user.id });
     res.send(blogs);
   });
 
@@ -29,6 +32,7 @@ module.exports = app => {
 
     try {
       await blog.save();
+      clearCache(req.user.id)
       res.send(blog);
     } catch (err) {
       res.send(400, err);
