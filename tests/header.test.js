@@ -10,7 +10,11 @@ beforeEach(async () => {
   await page.goto("http://localhost:3000");
 });
 
-test("launch a browser", async () => {
+afterEach(async () => {
+    await browser.close()
+})
+
+test("the header should has the correct logo test", async () => {
   const text = await page.$eval("a.brand-logo", el => el.innerHTML);
   expect(text).toEqual("Blogster");
 });
