@@ -33,6 +33,10 @@ class Page {
     await this.page.goto(this.HOME_URL);
     await this.page.waitFor('a[href="/auth/logout"]');
   }
+
+  getContent(selector) {
+    return this.page.$eval(selector, el => el.innerHTML);
+  }
 }
 
 module.exports = Page;

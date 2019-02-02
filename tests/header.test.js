@@ -14,7 +14,7 @@ afterEach(async () => {
 });
 
 test("the header should has the correct logo test", async () => {
-  const text = await page.$eval("a.brand-logo", el => el.innerHTML);
+  const text = await page.getContent("a.brand-logo");
   expect(text).toEqual("Blogster");
 });
 
@@ -24,8 +24,8 @@ test("should goto oAuth flow when click the login button", async () => {
   expect(url).toMatch(/accounts\.google\.com/);
 });
 
-test.only("should show logout button when use sign in", async () => {
+test("should show logout button when use sign in", async () => {
   await page.login()
-  const text = await page.$eval('a[href="/auth/logout"]', el => el.innerHTML);
+  const text = await page.getContent('a[href="/auth/logout"]');
   expect(text).toEqual("Logout");
 });
