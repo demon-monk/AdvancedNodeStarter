@@ -21,6 +21,19 @@ describe("when logged in and click new post btn", () => {
     expect(text).toEqual("Blog Title");
   });
 
+  describe("when enter valid inputs", () => {
+    beforeEach(async () => {
+      await page.type(".title input", "test title");
+      await page.type(".content input", "test content");
+      await page.click("form button");
+    });
+
+    test("should take user to review page", async () => {
+      const pageTitle = await page.getContent("h5");
+      expect(pageTitle).toEqual("Please confirm your entries");
+    });
+  });
+
   describe("when enter invalid inputs", () => {
     beforeEach(async () => {
       await page.click("form button");
