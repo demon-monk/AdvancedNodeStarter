@@ -59,16 +59,25 @@ describe("when logged in and click new post btn", () => {
 });
 
 describe("when not logged in", () => {
-  test("should not allow user to create new post", async () => {
-    const result = await page.post("/api/blogs", {
-      title: "test title",
-      content: "test content"
-    });
-    expect(result).toEqual({ error: "You must log in!" });
-  });
+  const actions = [
+    {
+      path: "/api/blogs",
+      method: "GET"
+    },
+    {
+      path: "/api/blogs",
+      method: "POST",
+      body: {
+        title: "test title",
+        content: "test content"
+      }
+    }
+  ];
 
-  test("should not allow user to get post list", async () => {
-    const result = await page.get("/api/blogs");
-    expect(result).toEqual({ error: "You must log in!" });
+  test("should forbid blog related requests", async () => {
+    const results = await page.doRequests(actions);
+    results.forEach(result => {
+      expect(result).toEqual({ error: "You must log in!" });
+    });
   });
 });

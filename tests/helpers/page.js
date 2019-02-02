@@ -56,6 +56,14 @@ class Page {
   post(path, body) {
     return this.page.evaluate(getFetch, path, "POST");
   }
+
+  doRequests(actions) {
+    return Promise.all(
+      actions.map(action =>
+        this.page.evaluate(getFetch, action.path, action.method)
+      )
+    );
+  }
 }
 
 module.exports = Page;
