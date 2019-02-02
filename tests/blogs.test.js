@@ -32,6 +32,15 @@ describe("when logged in and click new post btn", () => {
       const pageTitle = await page.getContent("h5");
       expect(pageTitle).toEqual("Please confirm your entries");
     });
+
+    test("should goto blog list page and shows the new blog post when click Save Blog button", async () => {
+      await page.click("button.green");
+      await page.waitFor(".card-content");
+      const newPostTitle = await page.getContent(".card-title");
+      expect(newPostTitle).toEqual("test title");
+      const newPostContent = await page.getContent(".card-content p");
+      expect(newPostContent).toEqual("test content");
+    });
   });
 
   describe("when enter invalid inputs", () => {
