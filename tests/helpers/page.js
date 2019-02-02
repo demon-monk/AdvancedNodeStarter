@@ -1,6 +1,17 @@
 const puppeteer = require("puppeteer");
 const userFactory = require("../factories/userFactory");
 const sessionFactory = require("../factories/sessionFactory");
+
+const getFetch = (path, method, obj) =>
+  fetch(path, {
+    method,
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(obj)
+  }).then(res => res.json());
+
 class Page {
   get HOME_URL() {
     return "http://localhost:3000";
@@ -36,6 +47,14 @@ class Page {
 
   getContent(selector) {
     return this.page.$eval(selector, el => el.innerHTML);
+  }
+
+  get(path) {
+    return this.page.evaluate(getFetch, path, "GET");
+  }
+
+  post(path, body) {
+    return this.page.evaluate(getFetch, path, "POST");
   }
 }
 
