@@ -57,3 +57,23 @@ describe("when logged in and click new post btn", () => {
     });
   });
 });
+
+describe("when not logged in", () => {
+  test("should not allow user to create new post", async () => {
+    const doFetch = () => {
+      return fetch("/api/blogs", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          title: "test title",
+          content: "test-content"
+        })
+      }).then(res => res.json());
+    };
+    const result = await page.evaluate(doFetch);
+    expect(result).toEqual({ error: "You must log in!" });
+  });
+});
