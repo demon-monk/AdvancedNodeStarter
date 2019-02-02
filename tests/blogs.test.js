@@ -76,4 +76,18 @@ describe("when not logged in", () => {
     const result = await page.evaluate(doFetch);
     expect(result).toEqual({ error: "You must log in!" });
   });
+
+  test("should not allow user to get post list", async () => {
+    const doFetch = () => {
+      return fetch("/api/blogs", {
+        method: "GET",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(res => res.json());
+    };
+    const result = await page.evaluate(doFetch);
+    expect(result).toEqual({ error: "You must log in!" });
+  });
 });
